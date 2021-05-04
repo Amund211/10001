@@ -1,0 +1,21 @@
+name: Python linting
+
+on: [push, workflow_dispatch]
+
+jobs:
+  check-formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: pip install black flake8 isort>=5.0
+    - name: Check formatting with black and isort
+      run: |
+        black --check .
+        isort --check-only .
+    - name: Check for errors with flake8
+      run: flake8 .
