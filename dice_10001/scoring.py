@@ -110,3 +110,18 @@ def get_outcomes(roll):
         outcomes.add(Outcome(points, dice))
 
     return outcomes or set([Outcome(0, DiceCount.BUST)])
+
+
+def filter_outcomes(outcomes):
+    """
+    Remove outcomes with the same remaining dice count but lower score
+    """
+    # The placeholder outcome has points=-1, and so will always be less than
+    # the outcome it is compared to in `max`
+    best_outcomes = defaultdict(lambda: Outcome(-1, DiceCount.BUST))
+    for outcome in outcomes:
+        best_outcomes[outcome.dice] = max(
+            outcome, best_outcomes[outcome.dice], key=lambda x: x.points
+        )
+
+    return set(best_outcomes.values())
