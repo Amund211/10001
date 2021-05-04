@@ -12,10 +12,12 @@ jobs:
       with:
         python-version: 3.9
     - name: Install dependencies
-      run: pip install black flake8 isort>=5.0
+      run: pip install black flake8 isort>=5.0 pylint
     - name: Check formatting with black and isort
       run: |
         black --check .
         isort --check-only .
-    - name: Check for errors with flake8
-      run: flake8 .
+    - name: Check for errors with flake8 and pylint
+      run: |
+        flake8 .
+        pylint dice_10001 tests

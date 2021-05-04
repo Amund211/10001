@@ -1,3 +1,6 @@
+"""
+Tests for roll generation
+"""
 from math import comb
 
 from dice_10001.generate import generate_rolls

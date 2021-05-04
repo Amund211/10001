@@ -1,3 +1,6 @@
+"""
+Module providing functions for generating rolls
+"""
 import operator
 from functools import reduce
 from itertools import groupby
