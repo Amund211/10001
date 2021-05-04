@@ -125,3 +125,22 @@ def filter_outcomes(outcomes):
         )
 
     return set(best_outcomes.values())
+
+
+def is_bust(roll):
+    """Determine if the given roll is bust"""
+    if 1 in roll or 5 in roll:
+        # 1s and 5s always give points
+        return False
+
+    freq = _get_frequencies(roll)
+
+    if any(count >= 3 for count in freq.values()):
+        # Three or more of a kind always gives points
+        return False
+
+    # Three pairs (full straight is handled by the 1s or 5s rule)
+    if len(freq.keys()) == 3 and all(count == 2 for count in freq.values()):
+        return False
+
+    return True

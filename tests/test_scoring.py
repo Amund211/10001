@@ -8,6 +8,7 @@ from dice_10001.scoring import (
     _get_keep_counts,
     filter_outcomes,
     get_outcomes,
+    is_bust,
 )
 
 
@@ -162,3 +163,33 @@ def test_filter_outcomes():
 
     for outcomes, filtered in cases:
         assert filter_outcomes(outcomes) == filtered
+
+
+def test_is_bust():
+    """Test that the `is_bust` helper works"""
+    cases = (
+        ((6,), True),
+        ((6, 6), True),
+        ((2, 4, 6), True),
+        ((2, 4, 4, 6), True),
+        ((2, 4, 4, 6, 6), True),
+        ((2, 2, 3, 3, 4, 6), True),
+        ((1, 2, 3, 4, 5, 6), False),
+        ((2, 2, 2, 3, 4, 6), False),
+        ((1, 2, 3, 4, 5, 6), False),
+        ((2, 2, 3, 3, 5, 5), False),
+        ((2, 2, 3, 3, 6, 6), False),
+        ((2, 3, 5, 5, 5), False),
+        ((1, 5), False),
+        ((1, 3, 5), False),
+        ((2, 2, 5, 6), False),
+        ((6, 6, 6, 6, 6), False),
+        ((1, 1, 2, 2, 3), False),
+        ((1, 1, 2, 2, 3, 5), False),
+        ((1, 1, 2, 2, 3, 3), False),
+        ((1, 1, 2, 3, 3, 3), False),
+        ((1, 1, 1, 5, 5, 5), False),
+    )
+
+    for roll, bust in cases:
+        assert is_bust(roll) == bust, f"Failed on roll {roll}"
