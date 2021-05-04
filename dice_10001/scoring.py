@@ -25,13 +25,13 @@ class DiceCount(int, Enum):
     Can be either a number [1, 6] or the special value DiceCount.BUST
     """
 
+    BUST = 0
     ONE = 1
     TWO = 2
     THREE = 3
     FOUR = 4
     FIVE = 5
     SIX = 6
-    BUST = -1
 
 
 @dataclass(frozen=True)
