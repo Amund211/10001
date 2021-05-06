@@ -72,21 +72,38 @@ def _get_keep_counts(eye_count, count):
     return chain((0,), range(3, count + 1))
 
 
-def get_outcomes(roll):
+def get_outcomes(roll, get_all=False):
     """
     Return a set of possible outcomes for the given roll
 
+    If get_all is False, only the roll with the most points for each remaining
+    dice count will be returned.
     Roll must be sorted.
     """
-    outcomes = set()
+    if get_all:
+        # Generate all outcomes
+        all_outcomes = set()
+
+        def add_outcome(outcome):
+            all_outcomes.add(outcome)
+
+    else:
+        # Generate only the best outcome for each remaining dice count
+        best_outcomes = defaultdict(lambda: Outcome(-1, DiceCount.BUST))
+
+        def add_outcome(outcome):
+            best_outcomes[outcome.dice] = max(
+                outcome, best_outcomes[outcome.dice], key=lambda x: x.points
+            )
+
     freq = _get_frequencies(roll)
     starting_dice = len(roll)
 
     # The two special cases: full straight and three pairs
     if roll == (1, 2, 3, 4, 5, 6):
-        outcomes.add(Outcome(2000, 6))
+        add_outcome(Outcome(2000, 6))
     elif len(freq.keys()) == 3 and all(count == 2 for count in freq.values()):
-        outcomes.add(Outcome(1500, 6))
+        add_outcome(Outcome(1500, 6))
 
     # Iterate over all unique selections of dice to keep
     for selection in product(
@@ -107,24 +124,14 @@ def get_outcomes(roll):
         if dice == 0:
             dice = 6
 
-        outcomes.add(Outcome(points, dice))
+        add_outcome(Outcome(points, dice))
+
+    if get_all:
+        outcomes = all_outcomes
+    else:
+        outcomes = set(best_outcomes.values())
 
     return outcomes or set([Outcome(0, DiceCount.BUST)])
-
-
-def filter_outcomes(outcomes):
-    """
-    Remove outcomes with the same remaining dice count but lower score
-    """
-    # The placeholder outcome has points=-1, and so will always be less than
-    # the outcome it is compared to in `max`
-    best_outcomes = defaultdict(lambda: Outcome(-1, DiceCount.BUST))
-    for outcome in outcomes:
-        best_outcomes[outcome.dice] = max(
-            outcome, best_outcomes[outcome.dice], key=lambda x: x.points
-        )
-
-    return set(best_outcomes.values())
 
 
 def is_bust(roll):
