@@ -5,16 +5,19 @@ import operator
 from functools import reduce
 from itertools import groupby
 from math import factorial
+from typing import Iterator
+
+from .types import Roll
 
 
-def _calculate_weight(roll):
+def _calculate_weight(roll: Roll) -> int:
     """Return the amount of permutations of the sorted `roll`"""
     return factorial(len(roll)) // reduce(
         operator.mul, (factorial(len(tuple(g))) for k, g in groupby(roll))
     )
 
 
-def generate_rolls(amt_dice):
+def generate_rolls(amt_dice: int) -> Iterator[tuple[Roll, int]]:
     """Generate rolls and corresponding weights in lexicographic order"""
     assert 0 < amt_dice <= 6
 

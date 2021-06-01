@@ -11,7 +11,7 @@ from dice_10001.scoring import (
 )
 
 
-def make_set(*outcomes):
+def make_set(*outcomes: tuple[int, int]) -> set[Outcome]:
     """
     Make a set of outcome instances from a list of tuples
 
@@ -20,7 +20,7 @@ def make_set(*outcomes):
     return set(Outcome(*outcome) for outcome in outcomes)
 
 
-def test_frequencies():
+def test_frequencies() -> None:
     """Assert that the frequency table is generated correctly"""
     cases = (
         ((1, 2, 3, 4, 5, 6), {k: 1 for k in range(1, 7)}),
@@ -36,7 +36,7 @@ def test_frequencies():
         assert _get_frequencies(roll) == freq
 
 
-def test_keep_counts():
+def test_keep_counts() -> None:
     """Assert that the keep counts are generated correctly"""
     cases = (
         # (eye_count, count), keep_counts
@@ -52,7 +52,7 @@ def test_keep_counts():
         assert tuple(_get_keep_counts(eye_count, count)) == tuple(keep_counts)
 
 
-def test_get_all_outcomes():
+def test_get_all_outcomes() -> None:
     """Assert that all generated outcomes are correct"""
     cases = (
         ((1, 2, 3, 4, 5, 6), make_set((2000, 6), (150, 4), (100, 5), (50, 5))),
@@ -98,7 +98,7 @@ def test_get_all_outcomes():
         assert get_outcomes(roll, get_all=True) == outcomes, f"Failed on roll {roll}"
 
 
-def test_get_outcomes():
+def test_get_outcomes() -> None:
     """Assert that generated best outcomes are correct"""
     cases = (
         ((1, 2, 3, 4, 5, 6), make_set((2000, 6), (150, 4), (100, 5))),
@@ -135,7 +135,7 @@ def test_get_outcomes():
         assert get_outcomes(roll) == outcomes, f"Failed on roll {roll}"
 
 
-def test_is_bust():
+def test_is_bust() -> None:
     """Test that the `is_bust` helper works"""
     cases = (
         ((6,), True),

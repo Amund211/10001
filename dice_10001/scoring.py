@@ -5,6 +5,9 @@ from collections import defaultdict
 from dataclasses import dataclass
 from enum import Enum, unique
 from itertools import chain, product
+from typing import Iterable
+
+from .types import Roll
 
 # Points granted for an amount of each eye count
 POINTS_TABLE = {
@@ -43,23 +46,19 @@ class Outcome:
     """
 
     points: int
-    dice: DiceCount
+    dice: int
 
 
-def _get_frequencies(roll):
-    """
-    Return the frequency table for `roll`
-
-    The returned type is a defaultdict
-    """
-    freq = defaultdict(int)
+def _get_frequencies(roll: Roll) -> dict[int, int]:
+    """Return the frequency table for `roll`"""
+    freq: dict[int, int] = defaultdict(int)
     for dice in roll:
         freq[dice] += 1
 
     return freq
 
 
-def _get_keep_counts(eye_count, count):
+def _get_keep_counts(eye_count: int, count: int) -> Iterable[int]:
     """
     Return an iterator of the amount of this eye_count you are allowed to keep
     """
@@ -72,7 +71,7 @@ def _get_keep_counts(eye_count, count):
     return chain((0,), range(3, count + 1))
 
 
-def get_outcomes(roll, get_all=False):
+def get_outcomes(roll: Roll, get_all: bool = False) -> set[Outcome]:
     """
     Return a set of possible outcomes for the given roll
 
@@ -84,14 +83,16 @@ def get_outcomes(roll, get_all=False):
         # Generate all outcomes
         all_outcomes = set()
 
-        def add_outcome(outcome):
+        def add_outcome(outcome: Outcome) -> None:
             all_outcomes.add(outcome)
 
     else:
         # Generate only the best outcome for each remaining dice count
-        best_outcomes = defaultdict(lambda: Outcome(-1, DiceCount.BUST))
+        best_outcomes: dict[int, Outcome] = defaultdict(
+            lambda: Outcome(-1, DiceCount.BUST)
+        )
 
-        def add_outcome(outcome):
+        def add_outcome(outcome: Outcome) -> None:
             best_outcomes[outcome.dice] = max(
                 outcome, best_outcomes[outcome.dice], key=lambda x: x.points
             )
@@ -134,7 +135,7 @@ def get_outcomes(roll, get_all=False):
     return outcomes or set([Outcome(0, DiceCount.BUST)])
 
 
-def is_bust(roll):
+def is_bust(roll: Roll) -> bool:
     """Determine if the given roll is bust"""
     if 1 in roll or 5 in roll:
         # 1s and 5s always give points

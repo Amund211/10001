@@ -21,6 +21,9 @@ jobs:
         python-version: ${{ matrix.python_version }}
     - name: Install dependencies
       run: pip install -r requirements.txt
+    - name: Run typechecking
+      run: |
+        mypy --strict --exclude 'main\.py' .
     - name: Run tests
       run: |
         coverage run --source=dice_10001 -m pytest
