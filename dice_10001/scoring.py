@@ -38,7 +38,7 @@ class DiceCount(int, Enum):
     SIX = 6
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Outcome:
     """
     A possible outcome of a roll
