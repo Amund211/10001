@@ -2,7 +2,8 @@ from collections import defaultdict
 from itertools import chain
 
 from dice_10001.generate import generate_rolls
-from dice_10001.scoring import DiceCount, get_best_outcomes, is_bust
+from dice_10001.scoring import get_best_outcomes, is_bust
+from dice_10001.types import DiceCount
 
 
 def find_unique_outcomes():

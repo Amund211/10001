@@ -3,15 +3,14 @@ Module providing functions for scoring rolls
 """
 
 from collections import defaultdict
-from dataclasses import dataclass
-from enum import Enum, unique
+from collections.abc import Mapping
 from itertools import chain, product
 from typing import Iterable
 
-from dice_10001.types import Roll
+from dice_10001.types import DiceCount, Outcome, Roll, Score
 
 # Points granted for an amount of each eye count
-POINTS_TABLE = {
+POINTS_TABLE: Mapping[int, list[Score]] = {
     1: [0, 100, 200, 1000, 2000, 4000, 8000],
     2: [0, 0, 0, 200, 400, 800, 1600],
     3: [0, 0, 0, 300, 600, 1200, 2400],
@@ -19,35 +18,6 @@ POINTS_TABLE = {
     5: [0, 50, 100, 500, 1000, 2000, 4000],
     6: [0, 0, 0, 600, 1200, 2400, 4800],
 }
-
-
-@unique
-class DiceCount(int, Enum):
-    """
-    Enum for dicecount
-
-    Can be either a number [1, 6] or the special value DiceCount.BUST
-    """
-
-    BUST = 0
-    ONE = 1
-    TWO = 2
-    THREE = 3
-    FOUR = 4
-    FIVE = 5
-    SIX = 6
-
-
-@dataclass(frozen=True, slots=True)
-class Outcome:
-    """
-    A possible outcome of a roll
-
-    Stores the points gained from the roll, and the amount of remaining dice
-    """
-
-    points: int
-    dice: int
 
 
 def _get_frequencies(roll: Roll) -> dict[int, int]:
