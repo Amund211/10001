@@ -2,7 +2,10 @@ from collections import defaultdict
 from itertools import chain
 
 from dice_10001.generate import generate_rolls
-from dice_10001.scoring import get_best_outcomes, is_bust
+from dice_10001.scoring import (
+    find_bust_chances,
+    get_best_outcomes,
+)
 from dice_10001.types import DiceCount
 
 
@@ -48,20 +51,6 @@ def _naive_points_strategy():
 
 def display_naive_points_strategy():
     _display_strategy(_naive_points_strategy())
-
-
-def find_bust_chances():
-    bust_chance = {}
-
-    for dice_count in range(1, 7):
-        total_weight = bust_weight = 0
-        for roll, weight in generate_rolls(dice_count):
-            if is_bust(roll):
-                bust_weight += weight
-            total_weight += weight
-        bust_chance[dice_count] = bust_weight / total_weight
-
-    return bust_chance
 
 
 if __name__ == "__main__":

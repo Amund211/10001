@@ -7,6 +7,7 @@ from collections.abc import Mapping
 from itertools import chain, product
 from typing import Iterable
 
+from dice_10001.generate import generate_rolls
 from dice_10001.types import DiceCount, Outcome, Roll, Score
 
 # Points granted for an amount of each eye count
@@ -120,3 +121,18 @@ def is_bust(roll: Roll) -> bool:
         return False
 
     return True
+
+
+def find_bust_chances() -> dict[int, float]:
+    """Return a dictionary of the chance of busting for each dice count"""
+    bust_chance = {}
+
+    for dice_count in range(1, 7):
+        total_weight = bust_weight = 0
+        for roll, weight in generate_rolls(dice_count):
+            if is_bust(roll):
+                bust_weight += weight
+            total_weight += weight
+        bust_chance[dice_count] = bust_weight / total_weight
+
+    return bust_chance
