@@ -1,3 +1,6 @@
 pytest
 coverage
 mypy
+isort
+flake8
+pylint
