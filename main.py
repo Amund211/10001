@@ -2,7 +2,7 @@ from collections import defaultdict
 from itertools import chain
 
 from dice_10001.generate import generate_rolls
-from dice_10001.scoring import DiceCount, get_outcomes, is_bust
+from dice_10001.scoring import DiceCount, get_best_outcomes, is_bust
 
 
 def find_unique_outcomes():
@@ -11,7 +11,7 @@ def find_unique_outcomes():
     for dice_count in range(1, 7):
         outcomes[dice_count] = defaultdict(int)
         for roll, weight in generate_rolls(dice_count):
-            for outcome in get_outcomes(roll):
+            for outcome in get_best_outcomes(roll):
                 outcomes[dice_count][outcome] += 1
 
     return outcomes
@@ -39,7 +39,7 @@ def _naive_points_strategy():
         outcomes[dice_count] = defaultdict(int)
         for roll, weight in generate_rolls(dice_count):
             # Choose the option that gives the most points
-            outcome = max(get_outcomes(roll), key=lambda x: x.points)
+            outcome = max(get_best_outcomes(roll), key=lambda x: x.points)
             outcomes[dice_count][outcome] += weight
 
     return outcomes

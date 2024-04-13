@@ -61,7 +61,7 @@ def _get_frequencies(roll: Roll) -> dict[int, int]:
 
 def _get_keep_counts(eye_count: int, count: int) -> Iterable[int]:
     """
-    Return an iterator of the amount of this eye_count you are allowed to keep
+    Return an iterable of the amount of this eye_count you are allowed to keep
     """
     # We are allowed to keep any amount of 1s and 5s since they all give points
     if eye_count in (1, 5):
@@ -72,40 +72,23 @@ def _get_keep_counts(eye_count: int, count: int) -> Iterable[int]:
     return chain((0,), range(3, count + 1))
 
 
-def get_outcomes(roll: Roll, get_all: bool = False) -> set[Outcome]:
-    """
-    Return a set of possible outcomes for the given roll
+def generate_outcomes(roll: Roll) -> Iterable[Outcome]:
+    """Yield a all possible outcomes for the given (sorted) roll"""
+    assert roll == tuple(sorted(roll))
 
-    If get_all is False, only the roll with the most points for each remaining
-    dice count will be returned.
-    Roll must be sorted.
-    """
-    if get_all:
-        # Generate all outcomes
-        all_outcomes = set()
-
-        def add_outcome(outcome: Outcome) -> None:
-            all_outcomes.add(outcome)
-
-    else:
-        # Generate only the best outcome for each remaining dice count
-        best_outcomes: dict[int, Outcome] = defaultdict(
-            lambda: Outcome(-1, DiceCount.BUST)
-        )
-
-        def add_outcome(outcome: Outcome) -> None:
-            best_outcomes[outcome.dice] = max(
-                outcome, best_outcomes[outcome.dice], key=lambda x: x.points
-            )
+    if is_bust(roll):
+        yield Outcome(0, DiceCount.BUST)
+        return
 
     freq = _get_frequencies(roll)
     starting_dice = len(roll)
 
     # The two special cases: full straight and three pairs
-    if roll == (1, 2, 3, 4, 5, 6):
-        add_outcome(Outcome(2000, 6))
-    elif len(freq.keys()) == 3 and all(count == 2 for count in freq.values()):
-        add_outcome(Outcome(1500, 6))
+    if starting_dice == 6:
+        if roll == (1, 2, 3, 4, 5, 6):
+            yield Outcome(2000, 6)
+        elif len(freq.keys()) == 3 and all(count == 2 for count in freq.values()):
+            yield Outcome(1500, 6)
 
     # Iterate over all unique selections of dice to keep
     for selection in product(
@@ -126,14 +109,28 @@ def get_outcomes(roll: Roll, get_all: bool = False) -> set[Outcome]:
         if dice == 0:
             dice = 6
 
-        add_outcome(Outcome(points, dice))
+        yield Outcome(points, dice)
 
-    if get_all:
-        outcomes = all_outcomes
-    else:
-        outcomes = set(best_outcomes.values())
 
-    return outcomes or set([Outcome(0, DiceCount.BUST)])
+def get_best_outcomes(roll: Roll) -> tuple[Outcome, ...]:
+    """Return a tuple of the best outcomes for each remaining dice count"""
+    best_outcomes: dict[int, Outcome] = defaultdict(lambda: Outcome(-1, DiceCount.BUST))
+
+    for outcome in generate_outcomes(roll):
+        best_outcomes[outcome.dice] = max(
+            outcome, best_outcomes[outcome.dice], key=lambda x: x.points
+        )
+
+    return tuple(best_outcomes.values())
+
+
+def get_all_outcomes(roll: Roll) -> set[Outcome]:
+    """Return a set of possible outcomes for the given roll"""
+    all_outcomes = set()
+
+    all_outcomes.update(generate_outcomes(roll))
+
+    return all_outcomes
 
 
 def is_bust(roll: Roll) -> bool:
