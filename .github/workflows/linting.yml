@@ -10,7 +10,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.12
     - name: Install dependencies
       run: pip install black flake8 isort>=5.0 pylint
     - name: Check formatting with black and isort
