@@ -3,6 +3,7 @@ from itertools import chain
 
 from dice_10001.generate import generate_rolls
 from dice_10001.scoring import (
+    best_outcomes_per_dice_count,
     find_bust_chances,
     get_best_outcomes,
 )
@@ -55,3 +56,10 @@ def display_naive_points_strategy():
 
 if __name__ == "__main__":
     from pprint import pprint  # noqa
+
+    outcomes_per_dice_count = best_outcomes_per_dice_count()
+    for dice_count, outcomes in outcomes_per_dice_count.items():
+        print(f"Dice: {dice_count}:")
+        print(f"\tOutcomes:        {len(outcomes):>5}")
+        print(f"\tOrdered rolls:   {len(tuple(generate_rolls(dice_count))):>5}")
+        print(f"\tUnordered rolls: {sum(outcomes.values()):>5}")

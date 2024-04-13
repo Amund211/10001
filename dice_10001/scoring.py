@@ -4,6 +4,7 @@ Module providing functions for scoring rolls
 
 from collections import defaultdict
 from collections.abc import Mapping
+from functools import cache
 from itertools import chain, product
 from typing import Iterable
 
@@ -136,3 +137,32 @@ def find_bust_chances() -> dict[int, float]:
         bust_chance[dice_count] = bust_weight / total_weight
 
     return bust_chance
+
+
+@cache
+def best_outcomes_per_dice_count() -> Mapping[int, Mapping[tuple[Outcome, ...], int]]:
+    """
+    Return a dictionary of the best outcomes for each dice count
+
+    The "best outcomes" is a mapping from a tuple of possible outcomes to their weight.
+    This is computed by computing all possible rolls, and finding the tuple of
+    possible outcomes (choices) that gives the most points for each dice count.
+    This abstracts away the actual rolls, and narrows the search space a bit, as some
+    rolls may have the same best outcomes.
+    ex: (1, 2, 5) and (1, 3, 5) both have the outcomes (100, 2) and (150, 1)
+
+    Dice: ordered rolls -> outcomes
+       1:             6 ->        3
+       2:            21 ->        6
+       3:            56 ->       14
+       4:           126 ->       31
+       5:           252 ->       61
+       6:           462 ->      119
+    """
+    outcomes_per_dice_count: dict[int, dict[tuple[Outcome, ...], int]] = {}
+    for dice_count in range(1, 7):
+        outcomes_per_dice_count[dice_count] = defaultdict(int)
+        for roll, weight in generate_rolls(dice_count):
+            outcomes = tuple(sorted(get_best_outcomes(roll)))
+            outcomes_per_dice_count[dice_count][outcomes] += weight
+    return outcomes_per_dice_count
