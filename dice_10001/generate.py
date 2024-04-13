@@ -8,7 +8,7 @@ from itertools import groupby
 from math import factorial
 from typing import Iterator
 
-from .types import Roll
+from dice_10001.types import Roll
 
 
 def _calculate_weight(roll: Roll) -> int:

@@ -8,7 +8,7 @@ from enum import Enum, unique
 from itertools import chain, product
 from typing import Iterable
 
-from .types import Roll
+from dice_10001.types import Roll
 
 # Points granted for an amount of each eye count
 POINTS_TABLE = {
