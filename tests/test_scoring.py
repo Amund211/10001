@@ -1,6 +1,7 @@
 """
 Tests for roll scoring
 """
+
 from dice_10001.scoring import (
     DiceCount,
     Outcome,

@@ -20,7 +20,7 @@ def find_unique_outcomes():
 def _display_strategy(outcomes):
     for from_count in outcomes:
         total_weight = sum(outcomes[from_count].values())
-        assert total_weight == 6 ** from_count
+        assert total_weight == 6**from_count
         print(f"From {from_count}:")
         for to_count in chain((DiceCount.BUST,), range(1, 7)):
             to_weight = sum(

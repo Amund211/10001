@@ -1,6 +1,7 @@
 """
 Module providing functions for scoring rolls
 """
+
 from collections import defaultdict
 from dataclasses import dataclass
 from enum import Enum, unique

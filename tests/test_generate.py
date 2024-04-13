@@ -1,6 +1,7 @@
 """
 Tests for roll generation
 """
+
 from math import comb
 
 from dice_10001.generate import generate_rolls
@@ -10,7 +11,7 @@ def test_weightsum() -> None:
     """Assert that the sum of the weights are correct"""
     for amt_dice in range(1, 7):
         weightsum = sum(weight for roll, weight in generate_rolls(amt_dice))
-        assert weightsum == 6 ** amt_dice
+        assert weightsum == 6**amt_dice
 
 
 def test_amount_unique_rolls() -> None:
