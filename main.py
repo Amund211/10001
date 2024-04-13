@@ -1,12 +1,9 @@
 from collections import defaultdict
 from itertools import chain
 
+from dice_10001.expected_value import estimate_evs, estimate_min_score_for_negative_ev
 from dice_10001.generate import generate_rolls
-from dice_10001.scoring import (
-    best_outcomes_per_dice_count,
-    find_bust_chances,
-    get_best_outcomes,
-)
+from dice_10001.scoring import best_outcomes_per_dice_count, get_best_outcomes
 from dice_10001.types import DiceCount
 
 
@@ -55,11 +52,23 @@ def display_naive_points_strategy():
 
 
 if __name__ == "__main__":
-    from pprint import pprint  # noqa
+    import sys
 
+    # estimate_ev uses deep recursion
+    sys.setrecursionlimit(25_000)
+
+    print('Unique rolls vs "best outcomes per dice count" for given dice count:')
     outcomes_per_dice_count = best_outcomes_per_dice_count()
-    for dice_count, outcomes in outcomes_per_dice_count.items():
-        print(f"Dice: {dice_count}:")
-        print(f"\tOutcomes:        {len(outcomes):>5}")
-        print(f"\tOrdered rolls:   {len(tuple(generate_rolls(dice_count))):>5}")
+    for dice_count, outcomes in reversed(outcomes_per_dice_count.items()):
+        print(f"{dice_count}:")
         print(f"\tUnordered rolls: {sum(outcomes.values()):>5}")
+        print(f"\tOrdered rolls:   {len(tuple(generate_rolls(dice_count))):>5}")
+        print(f"\tOutcomes:        {len(outcomes):>5}")
+
+    print("Expected value at 0 points for given dice count:")
+    for dice_count, ev in reversed(estimate_evs().items()):
+        print(f"{dice_count}: {ev:>5.2f}")
+
+    print("Minimum score for negative EV at given dice count:")
+    for dice_count, min_score in reversed(estimate_min_score_for_negative_ev().items()):
+        print(f"{dice_count}: {min_score:>5}")
