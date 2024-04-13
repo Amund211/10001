@@ -3,14 +3,13 @@ Tests for roll scoring
 """
 
 from dice_10001.scoring import (
-    DiceCount,
-    Outcome,
     _get_frequencies,
     _get_keep_counts,
     get_all_outcomes,
     get_best_outcomes,
     is_bust,
 )
+from dice_10001.types import DiceCount, Outcome
 
 
 def make_tuple(*outcomes: tuple[int, int]) -> tuple[Outcome, ...]:
@@ -143,7 +142,9 @@ def test_get_best_outcomes() -> None:
     )
 
     for roll, outcomes in cases:
-        assert get_best_outcomes(roll) == outcomes, f"Failed on roll {roll}"
+        assert sorted(get_best_outcomes(roll)) == sorted(
+            outcomes
+        ), f"Failed on roll {roll}"
 
 
 def test_is_bust() -> None:

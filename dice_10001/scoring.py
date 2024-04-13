@@ -96,7 +96,7 @@ def get_best_outcomes(roll: Roll) -> tuple[Outcome, ...]:
 
 def get_all_outcomes(roll: Roll) -> set[Outcome]:
     """Return a set of possible outcomes for the given roll"""
-    all_outcomes = set()
+    all_outcomes = set[Outcome]()
 
     all_outcomes.update(generate_outcomes(roll))
 
