@@ -1,7 +1,11 @@
 from collections import defaultdict
 from itertools import chain
 
-from dice_10001.expected_value import estimate_evs, estimate_min_score_for_negative_ev
+from dice_10001.expected_value import (
+    estimate_evs,
+    estimate_min_score_for_negative_ev,
+    reset_min_score_for_negative_ev,
+)
 from dice_10001.generate import generate_rolls
 from dice_10001.scoring import best_outcomes_per_dice_count, get_best_outcomes
 from dice_10001.types import DiceCount
@@ -67,6 +71,16 @@ if __name__ == "__main__":
 
     print("Expected value at 0 points for given dice count:")
     for dice_count, ev in reversed(estimate_evs().items()):
+        print(f"{dice_count}: {ev:>5.2f}")
+
+    print("Minimum score for negative EV at given dice count:")
+    for dice_count, min_score in reversed(estimate_min_score_for_negative_ev().items()):
+        print(f"{dice_count}: {min_score:>5}")
+
+    print("\nPointloss limit at 1000:")
+    reset_min_score_for_negative_ev()
+    print("Expected value at 0 points for given dice count:")
+    for dice_count, ev in reversed(estimate_evs(limit=1000).items()):
         print(f"{dice_count}: {ev:>5.2f}")
 
     print("Minimum score for negative EV at given dice count:")

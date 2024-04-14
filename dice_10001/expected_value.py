@@ -18,6 +18,22 @@ Minimum score for negative EV at given dice count:
 3:   450
 2:   250
 1:   350
+
+Pointloss limit at 1000:
+Expected value at 0 points for given dice count:
+6: 766.16
+5: 514.56
+4: 385.39
+3: 298.82
+2: 256.01
+1: 278.20
+Minimum score for negative EV at given dice count:
+6: 18100
+5:  3100
+4:  1050
+3:  1000
+2:  1000
+1:  1000
 """
 
 from functools import cache
@@ -30,8 +46,14 @@ MIN_SCORE_FOR_NEGATIVE_EV = {i: 10_000_000 for i in range(1, 7)}
 
 
 @cache
-def estimate_ev(dice_count: int, score: Score, depth: int) -> float:
-    """Estimate the expected value of rolling `dice_count` dice with the given score"""
+def estimate_ev(dice_count: int, score: Score, depth: int, limit: int = 0) -> float:
+    """
+    Estimate the expected value of rolling `dice_count` dice with the given score
+
+    limit: The minimum score that is treated as a loss if you bust.
+           This is used to get a proxy for the expected value and minimum scores when
+           forced to reach the given score (1000 in the first round of the game)
+    """
     if depth == 0:
         # This is wrong, but made insignificant by high depths
         return 0
@@ -44,7 +66,8 @@ def estimate_ev(dice_count: int, score: Score, depth: int) -> float:
 
         if outcomes[0].dice == DiceCount.BUST:
             assert len(outcomes) == 1
-            total_score -= score * weight
+            if score >= limit:
+                total_score -= score * weight
             continue
 
         max_ev = -1.0
@@ -52,7 +75,7 @@ def estimate_ev(dice_count: int, score: Score, depth: int) -> float:
             branch_ev: float = outcome.points
             if score + outcome.points < MIN_SCORE_FOR_NEGATIVE_EV[outcome.dice]:
                 subtree_ev = estimate_ev(
-                    outcome.dice, score + outcome.points, depth - 1
+                    outcome.dice, score + outcome.points, depth - 1, limit
                 )
                 if subtree_ev > 0:  # It is worth it to roll again
                     branch_ev += subtree_ev
@@ -73,11 +96,11 @@ def estimate_ev(dice_count: int, score: Score, depth: int) -> float:
     return ev
 
 
-def estimate_evs() -> dict[int, float]:
+def estimate_evs(limit: int = 0) -> dict[int, float]:
     """Return a mapping from dice count to estimated ev"""
     evs = {}
     for dice_count in range(1, 7):
-        evs[dice_count] = estimate_ev(dice_count, 0, depth=10_000)
+        evs[dice_count] = estimate_ev(dice_count, 0, depth=10_000, limit=limit)
     return evs
 
 
@@ -89,3 +112,9 @@ def estimate_min_score_for_negative_ev() -> dict[int, int]:
     """
     estimate_evs()  # Ensure the min score lookup is populated
     return MIN_SCORE_FOR_NEGATIVE_EV
+
+
+def reset_min_score_for_negative_ev() -> None:
+    """Reset the minimum score lookup"""
+    global MIN_SCORE_FOR_NEGATIVE_EV
+    MIN_SCORE_FOR_NEGATIVE_EV = {i: 10_000_000 for i in range(1, 7)}
