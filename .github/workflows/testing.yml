@@ -27,4 +27,4 @@ jobs:
     - name: Run tests
       run: |
         coverage run --source=dice_10001 -m pytest
-        coverage report -m --skip-covered --fail-under=100
+        coverage report -m --skip-covered

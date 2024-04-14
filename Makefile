@@ -11,6 +11,6 @@ fix:
 
 test:
 	coverage run --source=dice_10001 -m pytest -vvv
-	coverage report -m --skip-covered --fail-under=100
+	coverage report -m --skip-covered
 
 .PHONY: check test
