@@ -1,6 +1,7 @@
 from collections import defaultdict
 from itertools import chain
 
+from dice_10001.chance_to_reach import estimate_chances_to_reach
 from dice_10001.expected_value import (
     estimate_evs,
     estimate_min_score_for_negative_ev,
@@ -81,3 +82,9 @@ if __name__ == "__main__":
     print("Minimum score for negative EV at given dice count:")
     for dice_count, min_score in reversed(estimate_min_score_for_negative_ev().items()):
         print(f"{dice_count}: {min_score:>5}")
+
+    print("\nChance to reach 1000 points for given dice count at 0 points:")
+    for dice_count, chance in reversed(
+        estimate_chances_to_reach(score=0, target=1000).items()
+    ):
+        print(f"{dice_count}: {chance * 100:>5.2f}%")
