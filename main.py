@@ -56,11 +56,6 @@ def display_naive_points_strategy():
 
 
 if __name__ == "__main__":
-    import sys
-
-    # estimate_ev uses deep recursion
-    sys.setrecursionlimit(25_000)
-
     print('Unique rolls vs "best outcomes per dice count" for given dice count:')
     outcomes_per_dice_count = best_outcomes_per_dice_count()
     for dice_count, outcomes in reversed(outcomes_per_dice_count.items()):

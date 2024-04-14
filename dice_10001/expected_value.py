@@ -46,13 +46,19 @@ MIN_SCORE_FOR_NEGATIVE_EV = {i: 10_000_000 for i in range(1, 7)}
 
 
 @cache
-def estimate_ev(dice_count: int, score: Score, depth: int, limit: int = 0) -> float:
+def estimate_ev(
+    dice_count: int, score: Score, depth: int = 400, limit: int = 0
+) -> float:
     """
     Estimate the expected value of rolling `dice_count` dice with the given score
 
     limit: The minimum score that is treated as a loss if you bust.
            This is used to get a proxy for the expected value and minimum scores when
            forced to reach the given score (1000 in the first round of the game)
+
+    depth: Search depth for recursion. With limit 0, the maximum score cutoff is 18100.
+           Since the minimum score per roll is 50, all rounds must reach cutoff within
+           18100 / 50 = 362 depth. With a high limit, depth may need to be increased.
     """
     if depth == 0:
         # This is wrong, but made insignificant by high depths
@@ -100,7 +106,7 @@ def estimate_evs(limit: int = 0) -> dict[int, float]:
     """Return a mapping from dice count to estimated ev"""
     evs = {}
     for dice_count in range(1, 7):
-        evs[dice_count] = estimate_ev(dice_count, 0, depth=10_000, limit=limit)
+        evs[dice_count] = estimate_ev(dice_count, 0, limit=limit)
     return evs
 
 
