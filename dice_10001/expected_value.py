@@ -102,11 +102,11 @@ def estimate_ev(
     return ev
 
 
-def estimate_evs(limit: int = 0) -> dict[int, float]:
+def estimate_evs(score: Score = 0, limit: int = 0) -> dict[int, float]:
     """Return a mapping from dice count to estimated ev"""
     evs = {}
     for dice_count in range(1, 7):
-        evs[dice_count] = estimate_ev(dice_count, 0, limit=limit)
+        evs[dice_count] = estimate_ev(dice_count, score, limit=limit)
     return evs
 
 

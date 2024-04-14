@@ -65,7 +65,7 @@ if __name__ == "__main__":
         print(f"\tOutcomes:        {len(outcomes):>5}")
 
     print("Expected value at 0 points for given dice count:")
-    for dice_count, ev in reversed(estimate_evs().items()):
+    for dice_count, ev in reversed(estimate_evs(score=0).items()):
         print(f"{dice_count}: {ev:>5.2f}")
 
     print("Minimum score for negative EV at given dice count:")
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     print("\nPointloss limit at 1000:")
     reset_min_score_for_negative_ev()
     print("Expected value at 0 points for given dice count:")
-    for dice_count, ev in reversed(estimate_evs(limit=1000).items()):
+    for dice_count, ev in reversed(estimate_evs(score=0, limit=1000).items()):
         print(f"{dice_count}: {ev:>5.2f}")
 
     print("Minimum score for negative EV at given dice count:")
