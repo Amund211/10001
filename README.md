@@ -44,7 +44,8 @@ Note that this optimizes for reaching 1000 points, and not necessarily for expec
 It is probably better to roll again if you have 5 or 6 dice left, even after reaching 1000 points, because of the decent expected value and the low chance of failure.
 
 After reaching 1000 points you optimize for expected value by consulting the table in [results.txt](./results.txt).
-This is done in a similiar way to the previous table, but you must remember to add the points the outcome gives you to the expected value of the state it brings you to before comparing with other outcomes.
+This works in the same way as the previous table, but here you compare the expected value of the turn instead of your chance to reach 1000 points.
+
 A simplified version of the strategy is provided in the 'Minimum score for negative EV' table, which lists the score at each dice count where you should save your points and end your turn.
 Simlifying this even further, you can keep throwing at 5/6 dice at anything below 3000 points, keep throwing at anything below 1000 at 4 dice, and keep throwing below 300-400 at 3/2/1 dice.
 

@@ -102,11 +102,20 @@ def estimate_ev(
     return ev
 
 
-def estimate_evs(score: Score = 0, limit: int = 0) -> dict[int, float]:
-    """Return a mapping from dice count to estimated ev"""
+def estimate_evs(
+    score: Score = 0, limit: int = 0, net_ev: bool = True
+) -> dict[int, float]:
+    """
+    Return a mapping from dice count to estimated ev
+
+    net_ev: If True, the ev is the expected net gain. If False, the ev is the expected
+            gain including the current score (expected score for the whole turn).
+    """
     evs = {}
     for dice_count in range(1, 7):
-        evs[dice_count] = estimate_ev(dice_count, score, limit=limit)
+        evs[dice_count] = estimate_ev(dice_count, score, limit=limit) + (
+            0 if net_ev else score
+        )
     return evs
 
 

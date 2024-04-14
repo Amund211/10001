@@ -105,9 +105,12 @@ if __name__ == "__main__":
     for dice_count, min_score in reversed(estimate_min_score_for_negative_ev().items()):
         print(f"{dice_count}: {min_score:>5}")
 
-    print("\nExpected value for given dice count/score:")
+    print("\nExpected value for the whole turn for given dice count/score:")
     print_dict_table(
-        {str(score): estimate_evs(score=score) for score in range(0, 1050, 50)},
+        {
+            str(score): estimate_evs(score=score, net_ev=False)
+            for score in range(0, 1050, 50)
+        },
         lambda x: f"{x:.1f}",
     )
 
