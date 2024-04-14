@@ -116,5 +116,5 @@ def estimate_min_score_for_negative_ev() -> dict[int, int]:
 
 def reset_min_score_for_negative_ev() -> None:
     """Reset the minimum score lookup"""
-    global MIN_SCORE_FOR_NEGATIVE_EV
+    global MIN_SCORE_FOR_NEGATIVE_EV  # pylint: disable=global-statement
     MIN_SCORE_FOR_NEGATIVE_EV = {i: 10_000_000 for i in range(1, 7)}
